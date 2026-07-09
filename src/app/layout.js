@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import WaveBackground from "./components/WaveBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Zohair Ahmed — Creative Frontend Developer",
+  title: "Abbas — Full Stack Developer",
   description:
-    "Crafting immersive digital experiences through motion, code, and storytelling.",
+    "Full Stack Developer crafting immersive digital experiences across frontend and backend.",
 };
 
 export default function RootLayout({ children }) {
@@ -23,7 +24,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#0a0a0a] text-white">{children}</body>
+      <body className="min-h-full bg-[#0a0a0a] text-white">
+        <WaveBackground />
+        {children}
+      </body>
     </html>
   );
 }

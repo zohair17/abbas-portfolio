@@ -9,7 +9,7 @@ import TiltCard from "./TiltCard";
 const TESTIMONIALS = [
   {
     quote:
-      "Zohair turned our vision into something that genuinely felt alive. The motion work alone lifted our conversions.",
+      "Abbas turned our vision into something that genuinely felt alive. The motion work alone lifted our conversions.",
     name: "Sarah Lin",
     role: "Head of Product, Aurora",
     initials: "SL",

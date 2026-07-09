@@ -7,7 +7,7 @@ import { Linkedin, Instagram, Behance } from "./BrandIcons";
 
 const LINKS = [
   { icon: Linkedin, label: "LinkedIn", href: "#" },
-  { icon: Mail, label: "Email", href: "mailto:zohairahmed17@gmail.com" },
+  { icon: Mail, label: "Email", href: "mailto:abbas@example.com" },
   { icon: Behance, label: "Behance", href: "#" },
   { icon: Instagram, label: "Instagram", href: "#" },
   { icon: FileText, label: "Resume", href: "#" },

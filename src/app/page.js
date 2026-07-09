@@ -1,8 +1,9 @@
 import SmoothScroll from "./components/SmoothScroll";
 import HeroSection from "./components/HeroSection";
+import AboutSection from "./components/AboutSection";
 import PhilosophySection from "./components/PhilosophySection";
 import SkillsSection from "./components/SkillsSection";
-import FeaturedProjects from "./components/FeaturedProjects";
+import ProjectsSection from "./components/ProjectsSection";
 import BehindScenes from "./components/BehindScenes";
 import ProcessSection from "./components/ProcessSection";
 import Testimonials from "./components/Testimonials";
@@ -15,9 +16,10 @@ export default function Home() {
     <SmoothScroll>
       <main className="bg-[#0a0a0a]">
         <HeroSection />
+        <AboutSection />
         <PhilosophySection />
         <SkillsSection />
-        <FeaturedProjects />
+        <ProjectsSection />
         <BehindScenes />
         <ProcessSection />
         <Testimonials />

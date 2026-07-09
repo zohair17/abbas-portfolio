@@ -1,110 +1,137 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Search, PenTool, Code2, Rocket } from "lucide-react";
 
 const STAGES = [
-  { n: "01", icon: Search, title: "Discover", body: "Research, goals and audience. We map the problem before touching a pixel.", glow: "rgba(56,189,248,0.5)" },
-  { n: "02", icon: PenTool, title: "Design", body: "Wireframes to high-fidelity systems — the look, feel and motion language.", glow: "rgba(168,85,247,0.5)" },
-  { n: "03", icon: Code2, title: "Develop", body: "Production-grade, animated and accessible code built to scale.", glow: "rgba(132,204,22,0.5)" },
-  { n: "04", icon: Rocket, title: "Launch", body: "Ship, measure and iterate. Momentum that keeps compounding.", glow: "rgba(244,114,182,0.5)" },
+  { n: "01", icon: Search, title: "Discover", body: "Research, goals and audience. I map the problem before touching a pixel.", glow: "rgba(56,189,248,0.35)" },
+  { n: "02", icon: PenTool, title: "Design", body: "Wireframes to high-fidelity systems — the look, feel and motion language.", glow: "rgba(168,85,247,0.35)" },
+  { n: "03", icon: Code2, title: "Develop", body: "Production-grade, animated and accessible code built to scale.", glow: "rgba(132,204,22,0.35)" },
+  { n: "04", icon: Rocket, title: "Launch", body: "Ship, measure and iterate. Momentum that keeps compounding.", glow: "rgba(244,114,182,0.35)" },
 ];
+
+// A single stage card: reacts to the cursor with a 3D tilt + a colour-matched
+// spotlight that follows the pointer, and its oversized ghost number drifts on
+// scroll (parallax) via the shared `yNum` motion value from the section.
+function ProcessCard({ stage, index, yNum }) {
+  const { n, icon: Icon, title, body, glow } = stage;
+  const ref = useRef(null);
+
+  const onMove = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `perspective(1000px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg)`;
+    el.style.setProperty("--mx", `${(px + 0.5) * 100}%`);
+    el.style.setProperty("--my", `${(py + 0.5) * 100}%`);
+  };
+
+  const onLeave = () => {
+    const el = ref.current;
+    if (el) el.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg)";
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div
+        ref={ref}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        style={{ "--mx": "50%", "--my": "50%", "--glow": glow }}
+        className="group relative min-h-[16rem] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-transform duration-200 ease-out will-change-transform"
+      >
+        {/* cursor-following spotlight */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background:
+              "radial-gradient(500px circle at var(--mx) var(--my), var(--glow), transparent 55%)",
+          }}
+        />
+        {/* top sheen */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+        {/* parallax ghost number */}
+        <motion.span
+          style={{ y: yNum }}
+          className="pointer-events-none absolute -right-1 -top-8 select-none text-[8.5rem] font-bold leading-none text-white/[0.045]"
+        >
+          {n}
+        </motion.span>
+
+        <div className="relative z-10">
+          <div
+            className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5"
+            style={{ boxShadow: `0 0 30px ${glow}` }}
+          >
+            <Icon className="h-6 w-6 text-white" strokeWidth={1.5} />
+          </div>
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-sm text-zinc-500">{n}</span>
+            <h3 className="text-3xl font-semibold tracking-tight text-white">
+              {title}
+            </h3>
+          </div>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-400">
+            {body}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function ProcessSection() {
   const sectionRef = useRef(null);
-  const trackRef = useRef(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      const track = trackRef.current;
-
-      // Distance the track has to travel = its overflow past the viewport.
-      // (Animating `x` by this amount lands exactly on the last panel; the old
-      // `xPercent: -300` moved the 400vw track by 1200vw, so panels 1-4 flew
-      // past in the first quarter and the rest was an empty black screen.)
-      const getScrollAmount = () => track.scrollWidth - window.innerWidth;
-
-      const scroll = gsap.to(track, {
-        x: () => -getScrollAmount(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => "+=" + getScrollAmount(),
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // progress bar tied to the same horizontal scroll
-      gsap.to(".proc-bar", {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => "+=" + getScrollAmount(),
-          scrub: true,
-        },
-      });
-
-      return () => scroll.kill();
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  // Ghost numbers drift opposite the scroll direction for a parallax feel.
+  const yNum = useTransform(scrollYProgress, [0, 1], [70, -70]);
 
   return (
-    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-[#050505]">
-      {/* ambient colour shades so the section isn't pure black — echoes the
-          per-stage glow palette (sky / violet / lime / pink). Fixed to the
-          section so they stay put while the panels scroll horizontally. */}
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden bg-[#050505] px-6 py-28"
+    >
+      {/* ambient colour shades — sky / violet / lime / pink stage palette */}
       <div className="pointer-events-none absolute -left-32 top-1/4 h-[34rem] w-[34rem] rounded-full bg-sky-500/10 blur-[150px]" />
       <div className="pointer-events-none absolute left-1/3 -top-24 h-[30rem] w-[30rem] rounded-full bg-violet-600/10 blur-[150px]" />
-      <div className="pointer-events-none absolute bottom-0 right-1/4 h-[32rem] w-[32rem] rounded-full bg-lime-500/[0.07] blur-[150px]" />
-      <div className="pointer-events-none absolute -right-32 top-1/3 h-[34rem] w-[34rem] rounded-full bg-pink-500/10 blur-[150px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 h-[34rem] w-[34rem] rounded-full bg-pink-500/10 blur-[150px]" />
 
-      {/* progress bar */}
-      <div className="absolute left-0 top-0 z-20 h-1 w-full bg-white/5">
-        <div className="proc-bar h-full w-full origin-left scale-x-0 bg-gradient-to-r from-sky-400 via-violet-400 to-pink-400" />
-      </div>
+      <div className="mx-auto max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="mb-5 text-xs font-medium uppercase tracking-[0.4em] text-zinc-500">
+            The Process
+          </p>
+          <h2 className="max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-6xl">
+            From idea to launch, in four moves.
+          </h2>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-zinc-400">
+            A repeatable path that keeps every project focused, fast and
+            genuinely enjoyable to build.
+          </p>
+        </motion.div>
 
-      <div className="absolute left-6 top-8 z-20 sm:left-12">
-        <p className="text-xs font-medium uppercase tracking-[0.4em] text-zinc-500">
-          The Process
-        </p>
-      </div>
-
-      <div ref={trackRef} className="flex h-full w-[400vw]">
-        {STAGES.map(({ n, icon: Icon, title, body, glow }, i) => (
-          <div
-            key={title}
-            className="proc-panel relative flex h-full w-screen flex-col items-center justify-center px-8"
-          >
-            {i < STAGES.length - 1 && (
-              <div className="pointer-events-none absolute right-0 top-1/2 hidden h-px w-40 bg-gradient-to-r from-white/20 to-transparent lg:block" />
-            )}
-            <span className="text-[22vw] font-bold leading-none text-white/5 sm:text-[16vw]">
-              {n}
-            </span>
-            <div
-              className="-mt-10 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5"
-              style={{ boxShadow: `0 0 40px ${glow}` }}
-            >
-              <Icon className="h-7 w-7 text-white" strokeWidth={1.5} />
-            </div>
-            <h3 className="mt-8 text-4xl font-semibold tracking-tight text-white sm:text-6xl">
-              {title}
-            </h3>
-            <p className="mt-4 max-w-md text-center text-base leading-relaxed text-zinc-400">
-              {body}
-            </p>
-          </div>
-        ))}
+        <div className="mt-16 grid gap-6 md:grid-cols-2">
+          {STAGES.map((stage, i) => (
+            <ProcessCard key={stage.title} stage={stage} index={i} yNum={yNum} />
+          ))}
+        </div>
       </div>
     </section>
   );
