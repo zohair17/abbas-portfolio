@@ -9,12 +9,11 @@ import ProcessSection from "./components/ProcessSection";
 import Testimonials from "./components/Testimonials";
 import NumbersSection from "./components/NumbersSection";
 import TechPlayground from "./components/TechPlayground";
-import Footer from "./components/Footer";
 
 export default function Home() {
   return (
     <SmoothScroll>
-      <main className="bg-[#0a0a0a]">
+      <main className="relative z-10">
         <HeroSection />
         <AboutSection />
         <PhilosophySection />
@@ -25,7 +24,6 @@ export default function Home() {
         <Testimonials />
         <NumbersSection />
         <TechPlayground />
-        <Footer />
       </main>
     </SmoothScroll>
   );

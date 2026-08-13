@@ -14,7 +14,7 @@ const TESTIMONIALS = [
     role: "Head of Product, Aurora",
     initials: "SL",
     rating: 5,
-    glow: "rgba(168,85,247,0.35)",
+    glow: "rgba(56,140,255,0.35)",
   },
   {
     quote:
@@ -32,7 +32,7 @@ const TESTIMONIALS = [
     role: "Creative Director, Studio 9",
     initials: "AT",
     rating: 5,
-    glow: "rgba(244,114,182,0.35)",
+    glow: "rgba(59,130,246,0.35)",
   },
 ];
 
@@ -57,9 +57,9 @@ export default function Testimonials() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-[#050505] px-6 py-28"
+      className="relative w-full overflow-hidden bg-[#050505]/70 px-6 py-28"
     >
-      <div className="pointer-events-none absolute -top-20 right-1/4 h-[26rem] w-[26rem] rounded-full bg-fuchsia-600/10 blur-[130px]" />
+      <div className="pointer-events-none absolute -top-20 right-1/4 h-[26rem] w-[26rem] rounded-full bg-blue-600/10 blur-[130px]" />
 
       <div className="mx-auto max-w-6xl">
         <p className="mb-4 text-xs font-medium uppercase tracking-[0.4em] text-zinc-500">

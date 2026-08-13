@@ -1,171 +1,167 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 
-// LED dot-matrix headline. We clip a blue gradient to the text glyphs, then
-// punch a repeating dot grid through it with a mask so each letter reads as an
-// array of lit dots — the "CREATIVE DIRECTOR" display look from the reference.
-// The mask size is in `em` so the dots scale with the (responsive) font size.
-const ledStyle = {
-  fontFamily: "var(--font-geist-mono), ui-monospace, monospace",
+// Line one is solid: a cold white-to-ice ramp clipped to the glyphs, lit from
+// above. No metal, no texture — the letterforms carry the weight and the aurora
+// behind them supplies all the colour.
+const fillText = {
   color: "transparent",
   backgroundImage:
-    "linear-gradient(180deg, #eaf2ff 0%, #9dc3ff 55%, #3b82f6 100%)",
+    "linear-gradient(180deg, #ffffff 0%, #f4f9ff 38%, #cfe1ff 72%, #8fbaff 100%)",
   WebkitBackgroundClip: "text",
   backgroundClip: "text",
-  WebkitMaskImage: "radial-gradient(circle at center, #000 44%, transparent 48%)",
-  maskImage: "radial-gradient(circle at center, #000 44%, transparent 48%)",
-  WebkitMaskSize: "0.135em 0.155em",
-  maskSize: "0.135em 0.155em",
-  filter: "drop-shadow(0 0 22px rgba(59,130,246,0.5))",
+  filter:
+    "drop-shadow(0 0 70px rgba(56,140,255,0.4)) drop-shadow(0 20px 50px rgba(3,8,24,0.65))",
 };
 
-const nav = [
-  { label: "Work", href: "#work" },
+// Line two is hollow — stroke only, transparent counters, so the aurora reads
+// straight through the letters and plays against the solid line above. The
+// stroke is sized in em so it stays proportional as the display type scales
+// from phone to desktop.
+const outlineText = {
+  color: "transparent",
+  WebkitTextStroke: "0.016em rgba(255,255,255,0.8)",
+  filter: "drop-shadow(0 0 55px rgba(56,140,255,0.3))",
+};
+
+// Corner labels, mono + wide tracking, exactly the reference's four anchors.
+const metaClass =
+  "font-mono text-[10px] uppercase leading-relaxed tracking-[0.34em] text-white/35 sm:text-[11px]";
+
+const NAV = [
   { label: "Projects", href: "#projects" },
   { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function HeroSection() {
-  const spotlightRef = useRef(null);
+  const stageRef = useRef(null);
 
-  // Cursor-tracked purple/pink spotlight. We write the position straight to the
-  // element's style on mousemove (no React state → no re-render per frame); the
-  // reveal on enter/leave is handled by group-hover opacity below.
+  // Page scroll progress → the thin rail on the right edge.
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  // Featherweight cursor parallax: the headline leans a few pixels against the
+  // pointer. Written straight to style — no state, so no re-render per move.
   const handleMove = (e) => {
-    const el = spotlightRef.current;
+    const el = stageRef.current;
     if (!el) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    el.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(217,70,239,0.22), rgba(147,51,234,0.12) 32%, transparent 62%)`;
+    const { width, height } = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX / width - 0.5) * 2;
+    const y = (e.clientY / height - 0.5) * 2;
+    el.style.transform = `translate3d(${x * -10}px, ${y * -7}px, 0)`;
+  };
+
+  const handleLeave = () => {
+    const el = stageRef.current;
+    if (el) el.style.transform = "translate3d(0, 0, 0)";
   };
 
   return (
     <section
+      id="top"
       onMouseMove={handleMove}
-      className="group relative h-screen min-h-[640px] w-full overflow-hidden bg-[#05070d]"
+      onMouseLeave={handleLeave}
+      className="relative flex h-[100svh] min-h-[600px] w-full flex-col justify-between overflow-hidden bg-[#04050b]/70 px-6 py-6 sm:px-10 sm:py-8"
     >
-      {/* Purple/pink spotlight that follows the cursor, revealed on hover. */}
-      <div
-        ref={spotlightRef}
+      {/* Hairline along the very top edge. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+      {/* Scroll rail on the right edge. */}
+      <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-[15] opacity-0 mix-blend-screen transition-opacity duration-300 group-hover:opacity-100"
+        style={{ scaleY: progress }}
+        className="pointer-events-none fixed right-0 top-0 z-40 h-full w-[2px] origin-top bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700"
       />
 
-      {/* --- Ambient blue stage light behind the subject --- */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-[46%] rounded-full bg-[#1f6bff]/40 blur-[130px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[42vh] w-[42vh] -translate-x-1/2 -translate-y-[40%] rounded-full bg-[#38bdf8]/25 blur-[110px]" />
-      <div className="pointer-events-none absolute -left-32 bottom-0 h-[30rem] w-[30rem] rounded-full bg-indigo-700/15 blur-[140px]" />
-
-      {/* Thin orbital arc, offset off the left edge like the reference. */}
-      <div className="pointer-events-none absolute left-[-22vh] top-1/2 h-[85vh] w-[85vh] -translate-y-1/2 rounded-full border border-white/[0.06]" />
-
-      {/* --- LED display headline --- */}
-      <motion.h1
-        initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        style={ledStyle}
-        className="absolute left-1/2 top-[9%] z-20 w-full -translate-x-1/2 select-none text-center font-semibold uppercase leading-none tracking-[0.14em]"
-      >
-        <span className="text-[clamp(2.1rem,8.5vw,7rem)]">Software Engineer</span>
-      </motion.h1>
-
-      {/* --- Profile portrait --- */}
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-        className="absolute inset-x-0 bottom-0 z-10 flex justify-center"
-      >
-        <div className="relative h-[88vh] max-h-[860px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/asset/profile.png"
-            alt="Abbas — Software Engineer"
-            className="h-full w-auto object-contain object-bottom"
-            style={{
-              WebkitMaskImage:
-                "radial-gradient(ellipse 62% 70% at 50% 42%, #000 55%, transparent 82%)",
-              maskImage:
-                "radial-gradient(ellipse 62% 70% at 50% 42%, #000 55%, transparent 82%)",
-            }}
-          />
-          {/* Blue rim-light wash to tie the neutral photo into the stage. */}
-          <div
-            className="pointer-events-none absolute inset-0 mix-blend-screen"
-            style={{
-              background:
-                "radial-gradient(ellipse 55% 60% at 50% 40%, rgba(56,140,255,0.28), transparent 70%)",
-            }}
-          />
-        </div>
-      </motion.div>
-
-      {/* Bottom fade so the portrait dissolves into the section floor. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-56 bg-gradient-to-t from-[#05070d] via-[#05070d]/70 to-transparent" />
-
-      {/* --- Left identity block: name, description, CTAs --- */}
-      <motion.div
-        initial={{ opacity: 0, x: -24 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute left-0 top-1/2 z-20 max-w-2xl -translate-y-1/2 px-8 sm:px-16 lg:px-24"
-      >
-        <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl md:text-7xl">
-          Abbas
-        </h2>
-        <p className="mt-4 text-xl font-medium tracking-wide text-sky-300/90 sm:text-2xl md:text-3xl">
-          Full Stack Developer
-        </p>
-        <p className="mt-5 max-w-lg text-base leading-relaxed text-zinc-300 sm:text-lg md:text-xl">
-          Senior Software Engineer specializing in end-to-end digital
-          experiences and high-performance web platforms.
-        </p>
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <a
-            href="#work"
-            className="whitespace-nowrap rounded-full bg-white px-7 py-3 text-center text-sm font-medium text-black transition-colors hover:bg-zinc-200"
-          >
-            View Work
-          </a>
-          <a
-            href="#contact"
-            className="whitespace-nowrap rounded-full border border-white/25 px-7 py-3 text-center text-sm font-medium text-white transition-colors hover:border-white/60 hover:bg-white/5"
-          >
-            Let&apos;s Talk
-          </a>
-        </div>
-      </motion.div>
-
-      {/* --- Floating nav pill --- */}
-      <motion.nav
-        initial={{ opacity: 0, y: 18 }}
+      {/* ---------- Top meta row ---------- */}
+      <motion.header
+        initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-        className="absolute inset-x-0 bottom-6 z-30 mx-auto flex w-fit items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1.5 pl-4 backdrop-blur-md sm:bottom-8"
+        transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-20 grid grid-cols-2 items-start gap-4 md:grid-cols-3"
       >
-        <span className="mr-2 text-sm font-semibold tracking-[0.2em] text-white">
-          AB
-        </span>
-        {nav.map((n) => (
-          <a
-            key={n.label}
-            href={n.href}
-            className="rounded-full px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/10 hover:text-white sm:px-4"
+        <div className={metaClass}>
+          <p className="text-white/55">AR · 26</p>
+          <p className="mt-1.5">©2026 — Portfolio</p>
+        </div>
+
+        <p className={`${metaClass} hidden text-center md:block`}>
+          Senior Software Engineer
+        </p>
+
+        <div className={`${metaClass} text-right`}>
+          <p className="flex justify-end gap-3 text-white/55">
+            {NAV.map((n) => (
+              <a
+                key={n.label}
+                href={n.href}
+                className="transition-colors hover:text-white"
+              >
+                {n.label}
+              </a>
+            ))}
+          </p>
+          <p className="mt-1.5">React · Next.js · SPFx</p>
+        </div>
+      </motion.header>
+
+      {/* ---------- Name ---------- */}
+      <div
+        ref={stageRef}
+        className="relative z-10 flex flex-1 items-center justify-center transition-transform duration-500 ease-out will-change-transform"
+      >
+        {/* The two lines converge on load — ABBAS in from the left, RAZA from
+            the right. Only x and opacity animate: both spans already carry a
+            drop-shadow in their style, and animating `filter` here would
+            overwrite it mid-flight. */}
+        <h1 className="select-none text-center font-display uppercase leading-[0.86]">
+          <motion.span
+            initial={{ opacity: 0, x: "-22%" }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="block text-[clamp(4rem,18vw,15.5rem)] tracking-[0.005em]"
+            style={fillText}
           >
-            {n.label}
-          </a>
-        ))}
+            Abbas
+          </motion.span>
+          <motion.span
+            initial={{ opacity: 0, x: "22%" }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.4, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="block text-[clamp(4rem,18vw,15.5rem)] tracking-[0.055em]"
+            style={outlineText}
+          >
+            Raza
+          </motion.span>
+        </h1>
+      </div>
+
+      {/* ---------- Bottom meta row ---------- */}
+      <motion.footer
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-20 flex items-end justify-between gap-4"
+      >
+        <div className={metaClass}>
+          <p>4+ Years — Healthtech &amp; Enterprise</p>
+          <p className="mt-1.5">Karachi — Pakistan</p>
+        </div>
+
         <a
           href="#contact"
-          className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-zinc-200 sm:px-5"
+          className={`${metaClass} text-right transition-colors hover:text-white/70`}
         >
-          Contact
+          Available for freelance
         </a>
-      </motion.nav>
+      </motion.footer>
     </section>
   );
 }

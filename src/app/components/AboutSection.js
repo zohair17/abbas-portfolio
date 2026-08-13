@@ -30,14 +30,14 @@ const EXPERIENCE = [
     company: "Mentor Health Pvt. Ltd, Karachi",
     period: "1.4 years",
     body: "Delivered user-friendly portals and a secure telemedicine platform praised by doctors, patients and executives for boosting productivity and adoption.",
-    glow: "rgba(168,85,247,0.35)",
+    glow: "rgba(56,140,255,0.35)",
   },
   {
     role: "React Developer — Junior-Level",
     company: "Mutex Systems Pvt Ltd, Karachi",
     period: "1.5 years",
     body: "Engineered front-end architecture and reusable React components, debugging and optimizing applications for performance and scalability.",
-    glow: "rgba(244,114,182,0.35)",
+    glow: "rgba(59,130,246,0.35)",
   },
 ];
 
@@ -51,11 +51,11 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative w-full overflow-hidden bg-[#070707] px-6 py-28"
+      className="relative w-full overflow-hidden bg-[#070707]/70 px-6 py-28"
     >
       {/* ambient lighting echoing the hero's blue → violet palette */}
       <div className="pointer-events-none absolute -left-40 top-0 h-[34rem] w-[34rem] rounded-full bg-sky-600/10 blur-[150px]" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-[34rem] w-[34rem] rounded-full bg-violet-600/10 blur-[150px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[34rem] w-[34rem] rounded-full bg-blue-600/10 blur-[150px]" />
 
       <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
         {/* --- Left: intro --- */}
