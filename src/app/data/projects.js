@@ -10,6 +10,8 @@ export const PROJECTS = [
     desc: "Product storytelling with scroll-driven motion and a conversion-first checkout flow.",
     stack: ["Next.js", "Framer Motion", "Tailwind"],
     video: "video.mp4",
+    mobileVideo: "Nike Mobile View.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "hero.png",
   },
   {
@@ -20,6 +22,8 @@ export const PROJECTS = [
     desc: "Full retail front-end — catalogue, FAQ and checkout built as one cohesive system.",
     stack: ["React", "Redux Toolkit", "Node.js"],
     video: "video.mp4",
+    mobileVideo: "Highdy Mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "hero.png",
   },
   {
@@ -30,6 +34,8 @@ export const PROJECTS = [
     desc: "Single-product launch page tuned for load speed and a clean, persuasive narrative.",
     stack: ["Next.js", "GSAP", "Tailwind"],
     video: "shilajeet.mp4",
+    mobileVideo: "Shilajeet mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "1.png",
   },
   {
@@ -50,6 +56,8 @@ export const PROJECTS = [
     desc: "Tracking and dispatch dashboard handling live shipment data at scale.",
     stack: ["React", "Node.js", "MySQL"],
     video: "lv_0_20260703185935.mp4",
+    mobileVideo: "tcs mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "1.png",
   },
   {
@@ -60,6 +68,8 @@ export const PROJECTS = [
     desc: "Boutique perfume storefront with an editorial product grid and smooth cart flow.",
     stack: ["Next.js", "Tailwind", "Stripe"],
     video: "Screen Recording 2026-08-11 170750.mp4",
+    mobileVideo: "Elyscent Mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "1.png",
   },
   {
@@ -70,6 +80,8 @@ export const PROJECTS = [
     desc: "Men's grooming storefront — bold hero, clean catalogue, fast checkout.",
     stack: ["Next.js", "Tailwind", "MongoDB"],
     video: "Screen Recording 2026-08-11 171049.mp4",
+    mobileVideo: "Darimooch Mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "hero section.png",
   },
   {
@@ -80,6 +92,8 @@ export const PROJECTS = [
     desc: "Collection mint site with a heavy visual identity and animated reveal.",
     stack: ["React", "Three.js", "Web3"],
     video: "Screen Recording 2026-08-11 173941.mp4",
+    mobileVideo: "Samurae Mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "hero.png",
   },
   {
@@ -90,6 +104,8 @@ export const PROJECTS = [
     desc: "Marketing site built around large imagery and a tight, responsive layout.",
     stack: ["Next.js", "Framer Motion", "Tailwind"],
     video: "Screen Recording 2026-08-11 180539.mp4",
+    mobileVideo: "boss leaf mobile.mp4",
+    mobilePoster: "poster-mobile.webp",
     hero: "Screenshot 2026-08-11 180421.png",
   },
 ];
@@ -97,3 +113,6 @@ export const PROJECTS = [
 export const asset = (project, file) => encodeURI(`/asset/${project.dir}/${file}`);
 export const heroSrc = (p) => asset(p, p.hero);
 export const videoSrc = (p) => asset(p, p.video);
+// Mobile cuts are portrait re-records; projects without one fall back to the desktop file.
+export const mobileVideoSrc = (p) => asset(p, p.mobileVideo || p.video);
+export const mobilePosterSrc = (p) => (p.mobilePoster ? asset(p, p.mobilePoster) : heroSrc(p));

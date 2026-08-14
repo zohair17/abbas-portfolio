@@ -3,8 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Play, X } from "lucide-react";
-import { PROJECTS, heroSrc, videoSrc } from "../data/projects";
+import { ArrowLeft, Play, Power, X } from "lucide-react";
+import { PROJECTS, heroSrc, mobilePosterSrc, mobileVideoSrc, videoSrc } from "../data/projects";
+
+// Clips are warmed the moment a card is hovered or touched, so opening one
+// starts playback off the buffer instead of waiting on a cold request.
+const warmed = new Map();
+const warm = (src) => {
+  if (warmed.has(src)) return;
+  const v = document.createElement("video");
+  v.preload = "auto";
+  v.muted = true;
+  v.src = src;
+  v.load();
+  warmed.set(src, v);
+};
 
 const WORDS = ["Web Developer", "Next.js", "React.js", "Flutter", "TypeScript", "GSAP"];
 
@@ -134,6 +147,8 @@ function LedShowcase() {
   // leave the cards unreadably small, and a handset is the honest frame for
   // how these sites are actually browsed.
   const [phone, setPhone] = useState(false);
+  // The handset boots dark: you press power before the wall of projects appears.
+  const [powered, setPowered] = useState(false);
   const videoRef = useRef(null);
 
   const close = useCallback(() => setOpen(null), []);
@@ -162,6 +177,8 @@ function LedShowcase() {
       key={p.slug}
       type="button"
       onClick={() => setOpen(p)}
+      onPointerEnter={() => warm(phone ? mobileVideoSrc(p) : videoSrc(p))}
+      onTouchStart={() => warm(phone ? mobileVideoSrc(p) : videoSrc(p))}
       className={`group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] text-left transition-colors hover:border-sky-400/50 ${
         phone ? "h-32 w-full" : ""
       }`}
@@ -196,10 +213,12 @@ function LedShowcase() {
         >
           <video
             ref={videoRef}
-            src={videoSrc(open)}
-            poster={heroSrc(open)}
+            src={phone ? mobileVideoSrc(open) : videoSrc(open)}
+            poster={phone ? mobilePosterSrc(open) : heroSrc(open)}
             muted
             loop
+            autoPlay
+            preload="auto"
             playsInline
             className="h-full w-full object-cover"
           />
@@ -244,9 +263,24 @@ function LedShowcase() {
           <div className="relative aspect-[9/18] w-full rounded-[38px] border-[6px] border-[#15171d] bg-[#05070d] p-3 shadow-[0_40px_90px_-40px_rgba(56,140,255,0.6)]">
             <span className="absolute left-1/2 top-2 z-20 h-1.5 w-16 -translate-x-1/2 rounded-full bg-white/20" />
             <div className="pointer-events-none absolute inset-0 rounded-[32px] bg-[radial-gradient(ellipse_at_center,rgba(56,140,255,0.14),transparent_70%)]" />
-            <div className="relative h-full w-full overflow-y-auto rounded-[28px] pt-5">
-              <div className="flex flex-col gap-3 pb-3">{cards}</div>
-            </div>
+            {powered ? (
+              <div className="relative h-full w-full overflow-y-auto rounded-[28px] pt-5">
+                <div className="flex flex-col gap-3 pb-3">{cards}</div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setPowered(true)}
+                className="group relative flex h-full w-full flex-col items-center justify-center gap-4 rounded-[28px]"
+              >
+                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-white/5 transition-all group-hover:border-sky-400 group-hover:shadow-[0_0_30px_rgba(56,189,248,0.6)]">
+                  <Power className="h-6 w-6 text-white/70 group-hover:text-sky-300" />
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">
+                  Power on
+                </span>
+              </button>
+            )}
             {player}
           </div>
         </div>
