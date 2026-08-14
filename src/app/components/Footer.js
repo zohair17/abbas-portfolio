@@ -1,14 +1,13 @@
 "use client";
 
 import { Mail, ArrowUp } from "lucide-react";
-import { Linkedin, Behance, Github, Instagram } from "./BrandIcons";
+import { Linkedin, Github, Instagram } from "./BrandIcons";
 
 const SOCIALS = [
-  { icon: Linkedin, label: "LinkedIn", href: "#" },
-  { icon: Behance, label: "Behance", href: "#" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/syed-abbas-raza-shah-zaidi-49516b105" },
   { icon: Github, label: "GitHub", href: "#" },
-  { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Mail, label: "Email", href: "mailto:abbas@example.com" },
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/abbas_zaidi_10?igsh=MWFycXQwOWM5bnU0NQ%3D%3D" },
+  { icon: Mail, label: "Email", href: "mailto:abbas098110@gmail.com" },
 ];
 
 export default function Footer() {

@@ -2,14 +2,13 @@
 
 import { motion } from "framer-motion";
 import { Mail, FileText } from "lucide-react";
-import { Linkedin, Instagram, Behance } from "./BrandIcons";
+import { Linkedin, Instagram } from "./BrandIcons";
 
 const LINKS = [
-  { icon: Linkedin, label: "LinkedIn", href: "#" },
-  { icon: Mail, label: "Email", href: "mailto:abbas@example.com" },
-  { icon: Behance, label: "Behance", href: "#" },
-  { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: FileText, label: "Resume", href: "#" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/syed-abbas-raza-shah-zaidi-49516b105" },
+  { icon: Mail, label: "Email", href: "mailto:abbas098110@gmail.com" },
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/abbas_zaidi_10?igsh=MWFycXQwOWM5bnU0NQ%3D%3D" },
+  { icon: FileText, label: "Resume", href: "/Abbas%20-%20Senior%20Software%20Engineer.pdf", download: true },
 ];
 
 export default function TechPlayground() {
@@ -73,10 +72,13 @@ export default function TechPlayground() {
           transition={{ duration: 0.9, delay: 0.3 }}
           className="mt-12 flex flex-wrap items-center justify-center gap-3"
         >
-          {LINKS.map(({ icon: Icon, label, href }) => (
+          {LINKS.map(({ icon: Icon, label, href, download }) => (
             <a
               key={label}
               href={href}
+              download={download ? "" : undefined}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel={href.startsWith("http") ? "noreferrer" : undefined}
               className="group flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-all hover:border-white/40 hover:bg-white/10"
             >
               <Icon className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" strokeWidth={1.75} />

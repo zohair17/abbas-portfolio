@@ -30,11 +30,7 @@ const outlineText = {
 const metaClass =
   "font-mono text-[10px] uppercase leading-relaxed tracking-[0.34em] text-white/35 sm:text-[11px]";
 
-const NAV = [
-  { label: "Projects", href: "#projects" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-];
+const NAV = [{ label: "Contact", href: "#contact" }];
 
 export default function HeroSection() {
   const stageRef = useRef(null);
@@ -102,13 +98,13 @@ export default function HeroSection() {
               <a
                 key={n.label}
                 href={n.href}
-                className="transition-colors hover:text-white"
+                className={"transition-colors hover:text-white" }
               >
                 {n.label}
               </a>
             ))}
           </p>
-          <p className="mt-1.5">React · Next.js · SPFx</p>
+          <p className="mt-1.5 hidden md:block">React · Next.js · SPFx</p>
         </div>
       </motion.header>
 
@@ -148,16 +144,16 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-20 flex items-end justify-between gap-4"
+        className="relative z-20 flex flex-col items-start gap-1.5 md:flex-row md:items-end md:justify-between md:gap-4"
       >
-        <div className={metaClass}>
-          <p>4+ Years — Healthtech &amp; Enterprise</p>
-          <p className="mt-1.5">Karachi — Pakistan</p>
+        <div className={`${metaClass} order-2 md:order-none`}>
+          <p className="hidden md:block">5+ Years — Healthtech &amp; Enterprise</p>
+          <p className="md:mt-1.5">Karachi — Pakistan</p>
         </div>
 
         <a
           href="#contact"
-          className={`${metaClass} text-right transition-colors hover:text-white/70`}
+          className={`${metaClass} order-1 md:text-right transition-colors hover:text-white/70`}
         >
           Available for freelance
         </a>
