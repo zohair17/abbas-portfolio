@@ -8,7 +8,7 @@ const SOCIALS = [
   { icon: Behance, label: "Behance", href: "#" },
   { icon: Github, label: "GitHub", href: "#" },
   { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Mail, label: "Email", href: "mailto:zohairahmed17@gmail.com" },
+  { icon: Mail, label: "Email", href: "mailto:abbas@example.com" },
 ];
 
 export default function Footer() {
@@ -27,10 +27,10 @@ export default function Footer() {
           {/* logo */}
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-sm font-bold text-black">
-              ZA
+              AB
             </span>
             <span className="text-lg font-semibold tracking-tight text-white">
-              Zohair Ahmed
+              Abbas
             </span>
           </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
 
           <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-xs text-zinc-500">
-              © {new Date().getFullYear()} Zohair Ahmed. All rights reserved.
+              © {new Date().getFullYear()} Abbas. All rights reserved.
             </p>
             <p className="text-xs text-zinc-500">
               Crafted with motion, code & storytelling.

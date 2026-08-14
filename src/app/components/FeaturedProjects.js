@@ -11,7 +11,7 @@ const PROJECTS = [
     title: "Aurora Commerce",
     desc: "A headless storefront with buttery product transitions and instant checkout.",
     stack: ["Next.js", "GSAP", "Stripe", "Tailwind"],
-    tint: "from-indigo-600/30 to-fuchsia-600/20",
+    tint: "from-blue-500/30 to-blue-500/20",
     screen: "linear-gradient(135deg,#4f46e5,#db2777)",
   },
   {
